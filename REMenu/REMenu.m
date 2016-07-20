@@ -66,7 +66,7 @@
         _subtitleFont = [UIFont systemFontOfSize:14.0];
         
         _backgroundAlpha = 1.0;
-        _backgroundColor = [UIColor colorWithRed:53/255.0 green:53/255.0 blue:52/255.0 alpha:1.0];
+        _backgroundColor = [UIColor colorWithRed:232/255.0 green:232/255.0 blue:232/255.0 alpha:1.0];
         _separatorColor = [UIColor colorWithPatternImage:self.separatorImage];
         _textColor = [UIColor colorWithRed:128/255.0 green:126/255.0 blue:124/255.0 alpha:1.0];
         _textShadowColor = [UIColor blackColor];
@@ -196,7 +196,7 @@
             itemHeight += self.cornerRadius;
         
         UIView *separatorView = [[UIView alloc] initWithFrame:CGRectMake(self.separatorOffset.width,
-                                                                         index * self.itemHeight + index * self.separatorHeight + 40.0 + navigationBarOffset + self.separatorOffset.height,
+                                                                         index * self.itemHeight + index * self.separatorHeight + navigationBarOffset + self.separatorOffset.height,
                                                                          rect.size.width - self.separatorOffset.width,
                                                                          self.separatorHeight)];
         separatorView.backgroundColor = self.separatorColor;
@@ -204,7 +204,7 @@
         [self.menuView addSubview:separatorView];
         
         REMenuItemView *itemView = [[REMenuItemView alloc] initWithFrame:CGRectMake(0,
-                                                                                    index * self.itemHeight + (index + 1.0) * self.separatorHeight + 40.0 + navigationBarOffset,
+                                                                                    index * self.itemHeight + (index + 1.0) * self.separatorHeight + navigationBarOffset,
                                                                                     rect.size.width,
                                                                                     itemHeight)
                                                                     menu:self item:item
@@ -240,10 +240,6 @@
     [self.containerView addSubview:self.menuWrapperView];
     [view addSubview:self.containerView];
     
-    if ([self.delegate respondsToSelector:@selector(willOpenMenu:)]) {
-        [self.delegate willOpenMenu:self];
-    }
-    
     // Animate appearance
     //
     if (self.bounce) {
@@ -257,13 +253,10 @@
                              animations:^{
                  self.backgroundView.alpha = self.backgroundAlpha;
                  CGRect frame = self.menuView.frame;
-                 frame.origin.y = -40.0 - self.separatorHeight;
+                 frame.origin.y = -self.separatorHeight;
                  self.menuWrapperView.frame = frame;
              } completion:^(BOOL finished) {
                  self.isAnimating = NO;
-                 if ([self.delegate respondsToSelector:@selector(didOpenMenu:)]) {
-                     [self.delegate didOpenMenu:self];
-                 }
              }];
         } else {
             [UIView animateWithDuration:self.animationDuration
@@ -272,13 +265,10 @@
                              animations:^{
                  self.backgroundView.alpha = self.backgroundAlpha;
                  CGRect frame = self.menuView.frame;
-                 frame.origin.y = -40.0 - self.separatorHeight;
+                 frame.origin.y = -self.separatorHeight;
                  self.menuWrapperView.frame = frame;
              } completion:^(BOOL finished) {
                  self.isAnimating = NO;
-                 if ([self.delegate respondsToSelector:@selector(didOpenMenu:)]) {
-                     [self.delegate didOpenMenu:self];
-                 }
              }];
 
         }
@@ -289,13 +279,10 @@
                          animations:^{
             self.backgroundView.alpha = self.backgroundAlpha;
             CGRect frame = self.menuView.frame;
-            frame.origin.y = -40.0 - self.separatorHeight;
+            frame.origin.y = -self.separatorHeight;
             self.menuWrapperView.frame = frame;
         } completion:^(BOOL finished) {
             self.isAnimating = NO;
-            if ([self.delegate respondsToSelector:@selector(didOpenMenu:)]) {
-                [self.delegate didOpenMenu:self];
-            }
         }];
     }
 }
@@ -354,18 +341,12 @@
             if (self.closeCompletionHandler) {
                 self.closeCompletionHandler();
             }
-            if ([self.delegate respondsToSelector:@selector(didCloseMenu:)]) {
-                [self.delegate didCloseMenu:self];
-            }
         }];
         
     };
     
     if (self.closePreparationBlock) {
         self.closePreparationBlock();
-    }
-    if ([self.delegate respondsToSelector:@selector(willCloseMenu:)]) {
-        [self.delegate willCloseMenu:self];
     }
     
     if (self.bounce) {
@@ -388,7 +369,7 @@
 
 - (CGFloat)combinedHeight
 {
-    return self.items.count * self.itemHeight + self.items.count * self.separatorHeight + 40.0 + self.cornerRadius;
+    return self.items.count * self.itemHeight + self.items.count * self.separatorHeight + self.cornerRadius;
 }
 
 - (void)setNeedsLayout
